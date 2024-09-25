@@ -31,9 +31,7 @@ class Device:
     timeout = 0.1
     wait = 0
 
-    dummy = False
-
-    def __init__(self):
+    def __init__(self, dummy=False):
         self.logger = logging.getLogger(self.__class__.__name__)
 
         self.queue = queue.Queue()
@@ -42,16 +40,20 @@ class Device:
         self.info = self.logger.info
         self.start = self.thread.start
 
+        self.dummy = dummy
+        if dummy:
+            self.device = f"DUMMY_{self.__class__.__name__}"
+        else:
+            self.device = next( info.device for info in sorted(comports()) if (info.vid, info.pid) == self.usb_id )
+
     @contextmanager
     def open(self):
+        self.info("open %s", self.device)
         if self.dummy:
-            device = f"DUMMY_{self.__class__.__name__}"
-            self.info("open %s", device)
             yield DummySerial()
         else: 
-            device = next( info.device for info in sorted(comports()) if (info.vid, info.pid) == self.usb_id )
-            self.info("open %s", device)
-            with serial.Serial(device, *self.args, **self.kwargs, timeout=self.timeout) as ser:
+            self.info("open %s", self.device)
+            with serial.Serial(self.device, *self.args, **self.kwargs, timeout=self.timeout) as ser:
                 time.sleep(self.wait)
                 yield ser
 
@@ -127,8 +129,8 @@ class ADC(Device):
     usb_id = (0x2341, 0x003e)
     timeout = None
 
-    def __init__(self, callback=None, N=2048):
-        super().__init__()
+    def __init__(self, callback=None, N=2048, dummy=False):
+        super().__init__(dummy)
         self.rate = 20000
         self.N = N
         self.callback = callback

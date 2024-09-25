@@ -275,10 +275,37 @@ class MicroDeform:
         self.msgbox = QMessageBox(QMessageBox.Warning, "Error", "", parent=self.window)
         self.msgbox.setWindowModality(Qt.NonModal)
 
+        try:
+            self.xy = hw.XY()
+        except:
+            self.xy = hw.XY(dummy=True)
+        try:
+            self.z = hw.Z()
+        except:
+            self.z = hw.Z(dummy=True)
+        try:
+            self.fz = hw.Piezo()
+        except:
+            self.fz = hw.Piezo(dummy=True)
+        try:
+            self.adc = hw.ADC(self.window.adc_data.emit)
+        except:
+            self.adc = hw.ADC(self.window.adc_data.emit, dummy=True)
 
         self.window.setFocus()
         self.window.show()
         self.window.startTimer(500)
+
+        if any([self.xy.dummy, self.z.dummy, self.adc.dummy, self.fz.dummy]):
+            self.msgbox.setWindowTitle("Error")
+            self.msgbox.setText("Some devices could not be found:\n"
+                    f"XY: {self.xy.device}\n"
+                    f"Z: {self.z.device}\n"
+                    f"FineZ: {self.fz.device}\n"
+                    f"ADC: {self.adc.device}\n"
+                    )
+            self.msgbox.show()
+
 
     def __getattr__(self, name):
         return getattr(self.ui, name).value()
@@ -487,17 +514,10 @@ class MicroDeform:
 
 def main():
     logging.basicConfig()
-
-    if "dummy" in sys.argv[1:]:
-        hw.Device.dummy = True
-
     app = QApplication(sys.argv)
     md = MicroDeform()
-    with hw.XY() as xy, hw.Z() as z, hw.Piezo() as fz, hw.ADC(md.window.adc_data.emit) as adc:
-        md.xy = xy
-        md.z = z
-        md.fz = fz
-        md.adc = adc
+
+    with md.xy as xy, md.z as z, md.fz as fz, md.adc as adc:
 
         xy.logger.setLevel(logging.DEBUG if md.ui.LogXY.isChecked() else logging.WARNING)
         z.logger.setLevel(logging.DEBUG if md.ui.LogZ.isChecked() else logging.WARNING)
