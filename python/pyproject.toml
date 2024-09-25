@@ -1,0 +1,19 @@
+[project]
+name = "MicroDeform"
+version = "0.0.1"
+
+authors = [ { name="Jozef Veselý", email="vesely@gjh.sk" } ]
+
+requires-python = ">=3.8"
+dependencies = [
+    "numpy",
+    "pyserial",
+    "PySide6",
+    "pyqtgraph"
+]
+
+[project.scripts]
+MicroDeform = "MicroDeform.gui:main"
+
+[project.urls]
+Homepage = "https://github.com/jove1/MicroDeform"

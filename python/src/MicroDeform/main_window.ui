@@ -14,7 +14,7 @@
    <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Nanotest</string>
+   <string>MicroDeform</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_6">
@@ -488,20 +488,8 @@ Unload</string>
       </item>
       <item row="0" column="0">
        <widget class="QGroupBox" name="gCoarse">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
         <property name="title">
          <string>Coarse movement</string>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
-        <property name="checkable">
-         <bool>false</bool>
         </property>
         <layout class="QGridLayout" name="gridLayout_7">
          <item row="3" column="2">

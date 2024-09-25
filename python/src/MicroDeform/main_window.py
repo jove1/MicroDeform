@@ -359,10 +359,6 @@ class Ui_MainWindow(object):
 
         self.gCoarse = QGroupBox(self.centralwidget)
         self.gCoarse.setObjectName(u"gCoarse")
-        self.gCoarse.setEnabled(True)
-        self.gCoarse.setAutoFillBackground(False)
-        self.gCoarse.setFlat(True)
-        self.gCoarse.setCheckable(False)
         self.gridLayout_7 = QGridLayout(self.gCoarse)
         self.gridLayout_7.setObjectName(u"gridLayout_7")
         self.XMinus = QPushButton(self.gCoarse)
@@ -681,7 +677,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Nanotest", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MicroDeform", None))
         self.LogXY.setText(QCoreApplication.translate("MainWindow", u"XY", None))
         self.LogZ.setText(QCoreApplication.translate("MainWindow", u"Z", None))
         self.LogFineZ.setText(QCoreApplication.translate("MainWindow", u"Fine Z", None))
