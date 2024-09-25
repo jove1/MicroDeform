@@ -52,7 +52,6 @@ class Device:
         if self.dummy:
             yield DummySerial()
         else: 
-            self.info("open %s", self.device)
             with serial.Serial(self.device, *self.args, **self.kwargs, timeout=self.timeout) as ser:
                 time.sleep(self.wait)
                 yield ser
