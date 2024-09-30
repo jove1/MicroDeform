@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1038, 650)
+        MainWindow.resize(1021, 663)
         MainWindow.setFocusPolicy(Qt.StrongFocus)
         self.LogXY = QAction(MainWindow)
         self.LogXY.setObjectName(u"LogXY")
@@ -95,6 +95,34 @@ class Ui_MainWindow(object):
         self.gTest.setObjectName(u"gTest")
         self.gridLayout_10 = QGridLayout(self.gTest)
         self.gridLayout_10.setObjectName(u"gridLayout_10")
+        self.FName = QLineEdit(self.gTest)
+        self.FName.setObjectName(u"FName")
+        self.FName.setEnabled(False)
+
+        self.gridLayout_10.addWidget(self.FName, 0, 1, 1, 1)
+
+        self.label_16 = QLabel(self.gTest)
+        self.label_16.setObjectName(u"label_16")
+        self.label_16.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_10.addWidget(self.label_16, 0, 0, 1, 1)
+
+        self.Record = QPushButton(self.gTest)
+        self.Record.setObjectName(u"Record")
+
+        self.gridLayout_10.addWidget(self.Record, 0, 2, 1, 1)
+
+        self.Compression = QRadioButton(self.gTest)
+        self.Compression.setObjectName(u"Compression")
+        self.Compression.setChecked(True)
+
+        self.gridLayout_10.addWidget(self.Compression, 1, 0, 1, 3)
+
+        self.Tension = QRadioButton(self.gTest)
+        self.Tension.setObjectName(u"Tension")
+
+        self.gridLayout_10.addWidget(self.Tension, 2, 0, 1, 3)
+
         self.gridLayout_3 = QGridLayout()
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.gridLayout_3.setSizeConstraint(QLayout.SetMinimumSize)
@@ -239,18 +267,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addWidget(self.LoadSpeedNorm, 4, 3, 1, 1)
 
 
-        self.gridLayout_10.addLayout(self.gridLayout_3, 2, 0, 1, 1)
-
-        self.Compression = QRadioButton(self.gTest)
-        self.Compression.setObjectName(u"Compression")
-        self.Compression.setChecked(True)
-
-        self.gridLayout_10.addWidget(self.Compression, 0, 0, 1, 1)
-
-        self.Tension = QRadioButton(self.gTest)
-        self.Tension.setObjectName(u"Tension")
-
-        self.gridLayout_10.addWidget(self.Tension, 1, 0, 1, 1)
+        self.gridLayout_10.addLayout(self.gridLayout_3, 3, 0, 1, 3)
 
 
         self.gridLayout.addWidget(self.gTest, 0, 0, 1, 1)
@@ -299,23 +316,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2 = QGridLayout()
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.Stop = QPushButton(self.centralwidget)
-        self.Stop.setObjectName(u"Stop")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.Stop.sizePolicy().hasHeightForWidth())
-        self.Stop.setSizePolicy(sizePolicy2)
-        palette = QPalette()
-        brush = QBrush(QColor(239, 41, 41, 255))
-        brush.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.Button, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.Button, brush)
-        palette.setBrush(QPalette.Disabled, QPalette.Button, brush)
-        self.Stop.setPalette(palette)
-
-        self.gridLayout_2.addWidget(self.Stop, 0, 1, 2, 1)
-
         self.gFine = QGroupBox(self.centralwidget)
         self.gFine.setObjectName(u"gFine")
         self.gridLayout_8 = QGridLayout(self.gFine)
@@ -331,11 +331,11 @@ class Ui_MainWindow(object):
 
         self.label_26 = QLabel(self.gFine)
         self.label_26.setObjectName(u"label_26")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.label_26.sizePolicy().hasHeightForWidth())
-        self.label_26.setSizePolicy(sizePolicy3)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.label_26.sizePolicy().hasHeightForWidth())
+        self.label_26.setSizePolicy(sizePolicy2)
 
         self.gridLayout_8.addWidget(self.label_26, 0, 0, 1, 1)
 
@@ -356,6 +356,23 @@ class Ui_MainWindow(object):
 
 
         self.gridLayout_2.addWidget(self.gFine, 1, 0, 1, 1)
+
+        self.Stop = QPushButton(self.centralwidget)
+        self.Stop.setObjectName(u"Stop")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.Stop.sizePolicy().hasHeightForWidth())
+        self.Stop.setSizePolicy(sizePolicy3)
+        palette = QPalette()
+        brush = QBrush(QColor(239, 41, 41, 255))
+        brush.setStyle(Qt.SolidPattern)
+        palette.setBrush(QPalette.Active, QPalette.Button, brush)
+        palette.setBrush(QPalette.Inactive, QPalette.Button, brush)
+        palette.setBrush(QPalette.Disabled, QPalette.Button, brush)
+        self.Stop.setPalette(palette)
+
+        self.gridLayout_2.addWidget(self.Stop, 0, 1, 2, 1)
 
         self.gCoarse = QGroupBox(self.centralwidget)
         self.gCoarse.setObjectName(u"gCoarse")
@@ -463,6 +480,23 @@ class Ui_MainWindow(object):
         self.gMeasurement.setObjectName(u"gMeasurement")
         self.gridLayout_9 = QGridLayout(self.gMeasurement)
         self.gridLayout_9.setObjectName(u"gridLayout_9")
+        self.LoadNorm = QLabel(self.gMeasurement)
+        self.LoadNorm.setObjectName(u"LoadNorm")
+        self.LoadNorm.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_9.addWidget(self.LoadNorm, 1, 4, 1, 2)
+
+        self.LoadZero = QPushButton(self.gMeasurement)
+        self.LoadZero.setObjectName(u"LoadZero")
+
+        self.gridLayout_9.addWidget(self.LoadZero, 2, 3, 1, 1)
+
+        self.LoadAbs = QLabel(self.gMeasurement)
+        self.LoadAbs.setObjectName(u"LoadAbs")
+        self.LoadAbs.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_9.addWidget(self.LoadAbs, 1, 2, 1, 1)
+
         self.Area = QDoubleSpinBox(self.gMeasurement)
         self.Area.setObjectName(u"Area")
         self.Area.setDecimals(3)
@@ -472,39 +506,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout_9.addWidget(self.Area, 2, 5, 1, 1)
 
-        self.PosNorm = QLabel(self.gMeasurement)
-        self.PosNorm.setObjectName(u"PosNorm")
-        self.PosNorm.setAlignment(Qt.AlignCenter)
+        self.label_17 = QLabel(self.gMeasurement)
+        self.label_17.setObjectName(u"label_17")
+        self.label_17.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_9.addWidget(self.PosNorm, 4, 4, 1, 2)
-
-        self.label_2 = QLabel(self.gMeasurement)
-        self.label_2.setObjectName(u"label_2")
-
-        self.gridLayout_9.addWidget(self.label_2, 4, 0, 1, 1)
-
-        self.LoadAbs = QLabel(self.gMeasurement)
-        self.LoadAbs.setObjectName(u"LoadAbs")
-        self.LoadAbs.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_9.addWidget(self.LoadAbs, 1, 2, 1, 1)
-
-        self.label = QLabel(self.gMeasurement)
-        self.label.setObjectName(u"label")
-
-        self.gridLayout_9.addWidget(self.label, 1, 0, 1, 1)
-
-        self.PosRel = QLabel(self.gMeasurement)
-        self.PosRel.setObjectName(u"PosRel")
-        self.PosRel.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_9.addWidget(self.PosRel, 4, 3, 1, 1)
-
-        self.label_16 = QLabel(self.gMeasurement)
-        self.label_16.setObjectName(u"label_16")
-        self.label_16.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_9.addWidget(self.label_16, 8, 0, 1, 1)
+        self.gridLayout_9.addWidget(self.label_17, 0, 2, 1, 1)
 
         self.label_18 = QLabel(self.gMeasurement)
         self.label_18.setObjectName(u"label_18")
@@ -512,33 +518,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout_9.addWidget(self.label_18, 0, 3, 1, 1)
 
-        self.PosAbs = QLabel(self.gMeasurement)
-        self.PosAbs.setObjectName(u"PosAbs")
-        self.PosAbs.setAlignment(Qt.AlignCenter)
+        self.LoadRaw = QLabel(self.gMeasurement)
+        self.LoadRaw.setObjectName(u"LoadRaw")
+        self.LoadRaw.setAlignment(Qt.AlignCenter)
 
-        self.gridLayout_9.addWidget(self.PosAbs, 4, 2, 1, 1)
-
-        self.Record = QPushButton(self.gMeasurement)
-        self.Record.setObjectName(u"Record")
-
-        self.gridLayout_9.addWidget(self.Record, 8, 5, 1, 1)
-
-        self.LoadNorm = QLabel(self.gMeasurement)
-        self.LoadNorm.setObjectName(u"LoadNorm")
-        self.LoadNorm.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_9.addWidget(self.LoadNorm, 1, 4, 1, 2)
-
-        self.PosZero = QPushButton(self.gMeasurement)
-        self.PosZero.setObjectName(u"PosZero")
-
-        self.gridLayout_9.addWidget(self.PosZero, 5, 3, 1, 1)
-
-        self.label_20 = QLabel(self.gMeasurement)
-        self.label_20.setObjectName(u"label_20")
-        self.label_20.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.gridLayout_9.addWidget(self.label_20, 5, 4, 1, 1)
+        self.gridLayout_9.addWidget(self.LoadRaw, 1, 1, 1, 1)
 
         self.LoadRel = QLabel(self.gMeasurement)
         self.LoadRel.setObjectName(u"LoadRel")
@@ -546,55 +530,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout_9.addWidget(self.LoadRel, 1, 3, 1, 1)
 
-        self.label_19 = QLabel(self.gMeasurement)
-        self.label_19.setObjectName(u"label_19")
-        self.label_19.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.LoadBar = QProgressBar(self.gMeasurement)
+        self.LoadBar.setObjectName(u"LoadBar")
+        self.LoadBar.setMaximum(1000)
 
-        self.gridLayout_9.addWidget(self.label_19, 2, 4, 1, 1)
-
-        self.label_17 = QLabel(self.gMeasurement)
-        self.label_17.setObjectName(u"label_17")
-        self.label_17.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_9.addWidget(self.label_17, 0, 2, 1, 1)
-
-        self.PosRaw = QLabel(self.gMeasurement)
-        self.PosRaw.setObjectName(u"PosRaw")
-        self.PosRaw.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_9.addWidget(self.PosRaw, 4, 1, 1, 1)
-
-        self.Length = QDoubleSpinBox(self.gMeasurement)
-        self.Length.setObjectName(u"Length")
-        self.Length.setDecimals(3)
-        self.Length.setMaximum(1000.000000000000000)
-        self.Length.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
-        self.Length.setValue(10.000000000000000)
-
-        self.gridLayout_9.addWidget(self.Length, 5, 5, 1, 1)
-
-        self.PosRaw2 = QLabel(self.gMeasurement)
-        self.PosRaw2.setObjectName(u"PosRaw2")
-        self.PosRaw2.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_9.addWidget(self.PosRaw2, 5, 1, 1, 1)
-
-        self.PosAbs2 = QLabel(self.gMeasurement)
-        self.PosAbs2.setObjectName(u"PosAbs2")
-        self.PosAbs2.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_9.addWidget(self.PosAbs2, 5, 2, 1, 1)
-
-        self.LoadRaw = QLabel(self.gMeasurement)
-        self.LoadRaw.setObjectName(u"LoadRaw")
-        self.LoadRaw.setAlignment(Qt.AlignCenter)
-
-        self.gridLayout_9.addWidget(self.LoadRaw, 1, 1, 1, 1)
-
-        self.LoadZero = QPushButton(self.gMeasurement)
-        self.LoadZero.setObjectName(u"LoadZero")
-
-        self.gridLayout_9.addWidget(self.LoadZero, 2, 3, 1, 1)
+        self.gridLayout_9.addWidget(self.LoadBar, 3, 1, 1, 5)
 
         self.label_6 = QLabel(self.gMeasurement)
         self.label_6.setObjectName(u"label_6")
@@ -602,27 +542,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout_9.addWidget(self.label_6, 0, 4, 1, 2)
 
-        self.LoadBar = QProgressBar(self.gMeasurement)
-        self.LoadBar.setObjectName(u"LoadBar")
-        sizePolicy1.setHeightForWidth(self.LoadBar.sizePolicy().hasHeightForWidth())
-        self.LoadBar.setSizePolicy(sizePolicy1)
-        self.LoadBar.setMaximum(1000)
+        self.label_19 = QLabel(self.gMeasurement)
+        self.label_19.setObjectName(u"label_19")
+        self.label_19.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
-        self.gridLayout_9.addWidget(self.LoadBar, 3, 0, 1, 6)
-
-        self.PosBar = QProgressBar(self.gMeasurement)
-        self.PosBar.setObjectName(u"PosBar")
-        self.PosBar.setEnabled(True)
-        self.PosBar.setMaximum(1000)
-        self.PosBar.setValue(24)
-
-        self.gridLayout_9.addWidget(self.PosBar, 6, 0, 1, 6)
-
-        self.FName = QLineEdit(self.gMeasurement)
-        self.FName.setObjectName(u"FName")
-        self.FName.setEnabled(False)
-
-        self.gridLayout_9.addWidget(self.FName, 8, 1, 1, 4)
+        self.gridLayout_9.addWidget(self.label_19, 2, 4, 1, 1)
 
         self.label_24 = QLabel(self.gMeasurement)
         self.label_24.setObjectName(u"label_24")
@@ -633,6 +557,101 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addWidget(self.gMeasurement, 2, 0, 1, 2)
 
+        self.groupBox = QGroupBox(self.centralwidget)
+        self.groupBox.setObjectName(u"groupBox")
+        self.gridLayout_11 = QGridLayout(self.groupBox)
+        self.gridLayout_11.setObjectName(u"gridLayout_11")
+        self.PosRel = QLabel(self.groupBox)
+        self.PosRel.setObjectName(u"PosRel")
+        self.PosRel.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_11.addWidget(self.PosRel, 1, 3, 1, 1)
+
+        self.label_20 = QLabel(self.groupBox)
+        self.label_20.setObjectName(u"label_20")
+        self.label_20.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout_11.addWidget(self.label_20, 2, 4, 1, 1)
+
+        self.Length = QDoubleSpinBox(self.groupBox)
+        self.Length.setObjectName(u"Length")
+        self.Length.setDecimals(3)
+        self.Length.setMaximum(1000.000000000000000)
+        self.Length.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
+        self.Length.setValue(10.000000000000000)
+
+        self.gridLayout_11.addWidget(self.Length, 2, 5, 1, 1)
+
+        self.PosRaw2 = QLabel(self.groupBox)
+        self.PosRaw2.setObjectName(u"PosRaw2")
+        self.PosRaw2.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_11.addWidget(self.PosRaw2, 2, 1, 1, 1)
+
+        self.PosRaw = QLabel(self.groupBox)
+        self.PosRaw.setObjectName(u"PosRaw")
+        self.PosRaw.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_11.addWidget(self.PosRaw, 1, 1, 1, 1)
+
+        self.PosZero = QPushButton(self.groupBox)
+        self.PosZero.setObjectName(u"PosZero")
+
+        self.gridLayout_11.addWidget(self.PosZero, 2, 3, 1, 1)
+
+        self.PosBar = QProgressBar(self.groupBox)
+        self.PosBar.setObjectName(u"PosBar")
+        self.PosBar.setEnabled(True)
+        self.PosBar.setMaximum(1000)
+        self.PosBar.setValue(24)
+
+        self.gridLayout_11.addWidget(self.PosBar, 3, 1, 1, 5)
+
+        self.PosAbs2 = QLabel(self.groupBox)
+        self.PosAbs2.setObjectName(u"PosAbs2")
+        self.PosAbs2.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_11.addWidget(self.PosAbs2, 2, 2, 1, 1)
+
+        self.PosAbs = QLabel(self.groupBox)
+        self.PosAbs.setObjectName(u"PosAbs")
+        self.PosAbs.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_11.addWidget(self.PosAbs, 1, 2, 1, 1)
+
+        self.PosNorm = QLabel(self.groupBox)
+        self.PosNorm.setObjectName(u"PosNorm")
+        self.PosNorm.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_11.addWidget(self.PosNorm, 1, 4, 1, 2)
+
+        self.label = QLabel(self.groupBox)
+        self.label.setObjectName(u"label")
+        self.label.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_11.addWidget(self.label, 0, 1, 1, 1)
+
+        self.label_2 = QLabel(self.groupBox)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_11.addWidget(self.label_2, 0, 2, 1, 1)
+
+        self.label_3 = QLabel(self.groupBox)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_11.addWidget(self.label_3, 0, 3, 1, 1)
+
+        self.label_5 = QLabel(self.groupBox)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_11.addWidget(self.label_5, 0, 4, 1, 2)
+
+
+        self.gridLayout_2.addWidget(self.groupBox, 3, 0, 1, 2)
+
 
         self.gridLayout_6.addLayout(self.gridLayout_2, 0, 0, 1, 1)
 
@@ -642,7 +661,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1038, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1021, 22))
         self.menuLog = QMenu(self.menubar)
         self.menuLog.setObjectName(u"menuLog")
         self.menuQuery = QMenu(self.menubar)
@@ -695,6 +714,11 @@ class Ui_MainWindow(object):
         self.actionCompression.setText(QCoreApplication.translate("MainWindow", u"Compression", None))
         self.actionTension.setText(QCoreApplication.translate("MainWindow", u"Tension", None))
         self.gTest.setTitle(QCoreApplication.translate("MainWindow", u"Test", None))
+        self.FName.setText(QCoreApplication.translate("MainWindow", u"filename.dat", None))
+        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Filename", None))
+        self.Record.setText(QCoreApplication.translate("MainWindow", u"Record Data", None))
+        self.Compression.setText(QCoreApplication.translate("MainWindow", u"Compression", None))
+        self.Tension.setText(QCoreApplication.translate("MainWindow", u"Tension", None))
         self.LoadWaitUnload.setText(QCoreApplication.translate("MainWindow", u"Load\n"
 "Wait\n"
 "Unload", None))
@@ -715,19 +739,17 @@ class Ui_MainWindow(object):
         self.LoadStepNorm.setSuffix(QCoreApplication.translate("MainWindow", u" \u03bcm/\u03bcm", None))
         self.LoadSpeed.setSuffix(QCoreApplication.translate("MainWindow", u" \u03bcm/s", None))
         self.LoadSpeedNorm.setSuffix(QCoreApplication.translate("MainWindow", u" 1/s", None))
-        self.Compression.setText(QCoreApplication.translate("MainWindow", u"Compression", None))
-        self.Tension.setText(QCoreApplication.translate("MainWindow", u"Tension", None))
         self.gPlot.setTitle(QCoreApplication.translate("MainWindow", u"Plot", None))
         self.PlotTime.setText(QCoreApplication.translate("MainWindow", u"Load(Time); Position(Time)", None))
         self.PlotXY.setText(QCoreApplication.translate("MainWindow", u"Load(Position)", None))
         self.PlotClear.setText(QCoreApplication.translate("MainWindow", u"Clear", None))
-        self.Stop.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
         self.gFine.setTitle(QCoreApplication.translate("MainWindow", u"Fine movement", None))
         self.FZSpeed.setSuffix(QCoreApplication.translate("MainWindow", u" \u03bcm/s", None))
         self.label_26.setText(QCoreApplication.translate("MainWindow", u"Speed", None))
         self.FZPos.setText(QCoreApplication.translate("MainWindow", u"30.000 \u03bcm", None))
-        self.FZMinus.setText(QCoreApplication.translate("MainWindow", u"X-", None))
-        self.FZPlus.setText(QCoreApplication.translate("MainWindow", u"X+", None))
+        self.FZMinus.setText(QCoreApplication.translate("MainWindow", u"Fine Z-", None))
+        self.FZPlus.setText(QCoreApplication.translate("MainWindow", u"Fine Z+", None))
+        self.Stop.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
         self.gCoarse.setTitle(QCoreApplication.translate("MainWindow", u"Coarse movement", None))
         self.XMinus.setText(QCoreApplication.translate("MainWindow", u"X-", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Speed", None))
@@ -743,32 +765,32 @@ class Ui_MainWindow(object):
         self.YMinus.setText(QCoreApplication.translate("MainWindow", u"Y-", None))
         self.YSpeed.setSuffix(QCoreApplication.translate("MainWindow", u" \u03bcm/s", None))
         self.gADCMonitor.setTitle(QCoreApplication.translate("MainWindow", u"ADC Monitor", None))
-        self.gMeasurement.setTitle(QCoreApplication.translate("MainWindow", u"Measurement", None))
-        self.Area.setSuffix(QCoreApplication.translate("MainWindow", u" \u03bcm\u00b2", None))
-        self.PosNorm.setText(QCoreApplication.translate("MainWindow", u"?  \u03bcm/\u03bcm", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Position", None))
-        self.LoadAbs.setText(QCoreApplication.translate("MainWindow", u"? N", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"Load", None))
-        self.PosRel.setText(QCoreApplication.translate("MainWindow", u"?  \u03bcm", None))
-        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Filename", None))
-        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Relative", None))
-        self.PosAbs.setText(QCoreApplication.translate("MainWindow", u"?  \u03bcm", None))
-        self.Record.setText(QCoreApplication.translate("MainWindow", u"Record Data", None))
+        self.gMeasurement.setTitle(QCoreApplication.translate("MainWindow", u"Load", None))
         self.LoadNorm.setText(QCoreApplication.translate("MainWindow", u"? GPa", None))
-        self.PosZero.setText(QCoreApplication.translate("MainWindow", u"Rel. Zero", None))
-        self.label_20.setText(QCoreApplication.translate("MainWindow", u"Length", None))
-        self.LoadRel.setText(QCoreApplication.translate("MainWindow", u"? N", None))
-        self.label_19.setText(QCoreApplication.translate("MainWindow", u"Area", None))
+        self.LoadZero.setText(QCoreApplication.translate("MainWindow", u"Rel. Zero", None))
+        self.LoadAbs.setText(QCoreApplication.translate("MainWindow", u"? N", None))
+        self.Area.setSuffix(QCoreApplication.translate("MainWindow", u" \u03bcm\u00b2", None))
         self.label_17.setText(QCoreApplication.translate("MainWindow", u"Absolute", None))
-        self.PosRaw.setText(QCoreApplication.translate("MainWindow", u"? V", None))
+        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Relative", None))
+        self.LoadRaw.setText(QCoreApplication.translate("MainWindow", u"? V", None))
+        self.LoadRel.setText(QCoreApplication.translate("MainWindow", u"? N", None))
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Sample normalized", None))
+        self.label_19.setText(QCoreApplication.translate("MainWindow", u"Area", None))
+        self.label_24.setText(QCoreApplication.translate("MainWindow", u"Raw", None))
+        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Position", None))
+        self.PosRel.setText(QCoreApplication.translate("MainWindow", u"?  \u03bcm", None))
+        self.label_20.setText(QCoreApplication.translate("MainWindow", u"Length", None))
         self.Length.setSuffix(QCoreApplication.translate("MainWindow", u" \u03bcm", None))
         self.PosRaw2.setText(QCoreApplication.translate("MainWindow", u"? V", None))
+        self.PosRaw.setText(QCoreApplication.translate("MainWindow", u"? V", None))
+        self.PosZero.setText(QCoreApplication.translate("MainWindow", u"Rel. Zero", None))
         self.PosAbs2.setText(QCoreApplication.translate("MainWindow", u"?  \u03bcm", None))
-        self.LoadRaw.setText(QCoreApplication.translate("MainWindow", u"? V", None))
-        self.LoadZero.setText(QCoreApplication.translate("MainWindow", u"Rel. Zero", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Sample normalized", None))
-        self.FName.setText(QCoreApplication.translate("MainWindow", u"filename.dat", None))
-        self.label_24.setText(QCoreApplication.translate("MainWindow", u"Raw", None))
+        self.PosAbs.setText(QCoreApplication.translate("MainWindow", u"?  \u03bcm", None))
+        self.PosNorm.setText(QCoreApplication.translate("MainWindow", u"?  \u03bcm/\u03bcm", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Raw", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Absolute", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Relative", None))
+        self.label_5.setText(QCoreApplication.translate("MainWindow", u"Sample normalized", None))
         self.menuLog.setTitle(QCoreApplication.translate("MainWindow", u"Log", None))
         self.menuQuery.setTitle(QCoreApplication.translate("MainWindow", u"Query", None))
     # retranslateUi
