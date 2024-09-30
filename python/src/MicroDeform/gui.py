@@ -174,7 +174,6 @@ class MicroDeform:
         self.cycle_time = 50e-6 # SPA? 1 0x0E000200
         self.wave_memory = 8192 # SPA? 1 0x13000004
 
-        self.z_step_size = 2.5
         self.position_calib = lambda x: x/0.66666666 + 15 # nominal calibration
         self.load_calib = lambda x: x*3.434329*9.806 # mN
 
@@ -524,6 +523,12 @@ def main():
         fz.logger.setLevel(logging.DEBUG if md.ui.LogFineZ.isChecked() else logging.WARNING)
         adc.logger.setLevel(logging.DEBUG if md.ui.LogADC.isChecked() else logging.WARNING)
 
+        z.cmd("ustep 2")
+        md.z_step_size = 2.5/16
+        # 0 - 1 step
+        # 1 - 1/2 step
+        # 2 - 1/16 step
+        # 3 - 1/8 step
         z.cmd("?").callback(print)
 
         xy_ver = xy.cmd("0 VER ?").result()
