@@ -28,7 +28,6 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1021, 663)
         MainWindow.setFocusPolicy(Qt.StrongFocus)
         self.LogXY = QAction(MainWindow)
         self.LogXY.setObjectName(u"LogXY")

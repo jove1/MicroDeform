@@ -184,12 +184,21 @@ class MicroDeform:
         self.position_calib = lambda x: x/0.66666666 + 15 # nominal calibration
         self.load_calib = lambda x: x*3.434329*9.806 # mN
 
+        self.load_hi = 6
+        self.load_lo = -6
+
+        self.z_ustep = 16
+        self.z_step_size = 2.5/self.z_ustep
+
         self.window = Window(self)
         self.ui = ui = Ui_MainWindow()
         ui.setupUi(self.window)
 
         setColor(self.ui.Stop, QPalette.Button, Qt.red)
         setColor(self.ui.Record, QPalette.Button, Qt.darkGreen)
+
+        self.ui.ZSpeed.setMinimum(self.z_step_size)
+        self.ui.ZSpeed.setMaximum(1000*self.z_step_size)
 
         ui.Length.valueChanged.connect( lambda val: setValueNoSignal(ui.LoadStepNorm, self.LoadStep/self.Length) )
         ui.Length.valueChanged.connect( lambda val: setValueNoSignal(ui.LoadSpeedNorm, self.LoadSpeed/self.Length) )
@@ -351,8 +360,8 @@ class MicroDeform:
             self.xy.cmd("2 STP")
             self.Ymoving = False
 
-    def ZPlus(self):   self.z.cmd("vel {}", int(round(self.ZSpeed/self.z_step_size)) ); self.z.cmd("rel 5000"); self.Zmoving = True
-    def ZMinus(self):  self.z.cmd("vel {}", int(round(self.ZSpeed/self.z_step_size)) ); self.z.cmd("rel -5000"); self.Zmoving = True
+    def ZPlus(self):   self.z.cmd("vel {}", int(round(self.ZSpeed/self.z_step_size)) ); self.z.cmd("rel {}", 5000*self.z_ustep); self.Zmoving = True
+    def ZMinus(self):  self.z.cmd("vel {}", int(round(self.ZSpeed/self.z_step_size)) ); self.z.cmd("rel {}", -5000*self.z_ustep); self.Zmoving = True
     def ZStop(self):
         if self.Zmoving:
             self.z.cmd("rel 0")
@@ -534,8 +543,7 @@ def main():
         fz.logger.setLevel(logging.DEBUG if md.ui.LogFineZ.isChecked() else logging.WARNING)
         adc.logger.setLevel(logging.DEBUG if md.ui.LogADC.isChecked() else logging.WARNING)
 
-        z.cmd("ustep 2")
-        md.z_step_size = 2.5/16
+        z.cmd("ustep {}", {1:0, 2:1, 8:3, 16:2}[md.z_ustep] )
         # 0 - 1 step
         # 1 - 1/2 step
         # 2 - 1/16 step
