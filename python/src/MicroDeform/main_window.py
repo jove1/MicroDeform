@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file ''
+## Form generated from reading UI file 'main_window.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.2.4
 ##
@@ -95,11 +95,11 @@ class Ui_MainWindow(object):
         self.gTest.setObjectName(u"gTest")
         self.gridLayout_10 = QGridLayout(self.gTest)
         self.gridLayout_10.setObjectName(u"gridLayout_10")
-        self.FName = QLineEdit(self.gTest)
-        self.FName.setObjectName(u"FName")
-        self.FName.setEnabled(False)
+        self.FileName = QLineEdit(self.gTest)
+        self.FileName.setObjectName(u"FileName")
+        self.FileName.setEnabled(False)
 
-        self.gridLayout_10.addWidget(self.FName, 0, 1, 1, 1)
+        self.gridLayout_10.addWidget(self.FileName, 0, 1, 1, 1)
 
         self.label_16 = QLabel(self.gTest)
         self.label_16.setObjectName(u"label_16")
@@ -364,13 +364,6 @@ class Ui_MainWindow(object):
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.Stop.sizePolicy().hasHeightForWidth())
         self.Stop.setSizePolicy(sizePolicy3)
-        palette = QPalette()
-        brush = QBrush(QColor(239, 41, 41, 255))
-        brush.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.Button, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.Button, brush)
-        palette.setBrush(QPalette.Disabled, QPalette.Button, brush)
-        self.Stop.setPalette(palette)
 
         self.gridLayout_2.addWidget(self.Stop, 0, 1, 2, 1)
 
@@ -714,7 +707,6 @@ class Ui_MainWindow(object):
         self.actionCompression.setText(QCoreApplication.translate("MainWindow", u"Compression", None))
         self.actionTension.setText(QCoreApplication.translate("MainWindow", u"Tension", None))
         self.gTest.setTitle(QCoreApplication.translate("MainWindow", u"Test", None))
-        self.FName.setText(QCoreApplication.translate("MainWindow", u"filename.dat", None))
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Filename", None))
         self.Record.setText(QCoreApplication.translate("MainWindow", u"Record Data", None))
         self.Compression.setText(QCoreApplication.translate("MainWindow", u"Compression", None))

@@ -29,6 +29,13 @@ def setValueNoSignal(obj, value):
     with QSignalBlocker(obj):
         obj.setValue(value)
 
+def setColor(obj, role, color=None):
+    palette = QPalette()
+    if color:
+        palette.setColor(role, color)
+    obj.setPalette(palette)
+
+
 class Window(QMainWindow):
     adc_data = Signal(object)
     xy_pos = Signal(str)
@@ -180,6 +187,9 @@ class MicroDeform:
         self.window = Window(self)
         self.ui = ui = Ui_MainWindow()
         ui.setupUi(self.window)
+
+        setColor(self.ui.Stop, QPalette.Button, Qt.red)
+        setColor(self.ui.Record, QPalette.Button, Qt.darkGreen)
 
         ui.Length.valueChanged.connect( lambda val: setValueNoSignal(ui.LoadStepNorm, self.LoadStep/self.Length) )
         ui.Length.valueChanged.connect( lambda val: setValueNoSignal(ui.LoadSpeedNorm, self.LoadSpeed/self.Length) )
@@ -366,6 +376,8 @@ class MicroDeform:
             self.fh.close()
             self.fh = None
             self.ui.Record.setText("Record")
+            self.ui.FileName.setText("")
+            setColor(self.ui.Record, QPalette.Button, Qt.darkGreen)
         else:
             fname, _ = QFileDialog.getSaveFileName(self.window, "Save data", filter="Data files (*.dat)")
             if not fname:
@@ -379,6 +391,9 @@ class MicroDeform:
 }}""")
             self.fh = open(fname, "wb")
             self.ui.Record.setText("Stop")
+            self.ui.FileName.setText(fname)
+            setColor(self.ui.Record, QPalette.Button, Qt.red)
+
 
     def LoadWaitUnload(self):
         t1 = abs(self.LoadStep/self.LoadSpeed)
@@ -418,10 +433,7 @@ class MicroDeform:
         z = int(m[1])*self.z_step_size
         lim = int(m[4]) or int(m[5])
         self.ui.ZPos.setText(f"{z:.1f} μm")
-        palette = QPalette()
-        if lim:
-            palette.setColor(QPalette.WindowText, Qt.red)
-        self.ui.ZPos.setPalette(palette)
+        setColor(self.ui.ZPos, QPalette.WindowText, Qt.red if lim else None)
 
     def fz_pos(self, s):
         m = re.match(f"1={num}", s)
@@ -461,10 +473,7 @@ class MicroDeform:
         self.ui.PosBar.setFormat(f"{m[0]: .1f} V")
         self.ui.LoadBar.setFormat(f"{m[1]: .1f} V")
 
-        palette = QPalette()
-        if v[1] < 300 or v[1] > 700:
-            palette.setColor(QPalette.Highlight, Qt.red)
-        self.ui.LoadBar.setPalette(palette)
+        setColor(self.ui.LoadBar, QPalette.Highlight, Qt.darkGreen if self.load_lo < m[1] < self.load_hi else Qt.red)
 
         data[:,0] = self.position_calib(data[:,0])
         data[:,1] = self.load_calib(data[:,1])
@@ -514,6 +523,8 @@ class MicroDeform:
 def main():
     logging.basicConfig()
     app = QApplication(sys.argv)
+    app.setStyle('Fusion')
+
     md = MicroDeform()
 
     with md.xy as xy, md.z as z, md.fz as fz, md.adc as adc:
