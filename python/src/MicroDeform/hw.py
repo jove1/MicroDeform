@@ -15,6 +15,8 @@ class Future(concurrent.futures.Future):
     def callback(self, fn):
         self.add_done_callback( lambda f: fn(f.result()) )
 
+import re
+num = r"([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
 
 class DummySerial:
     def write(self, data):
@@ -112,6 +114,17 @@ class XY(Device):
         self.cmd("{} VEL {}", ax, vel/1000)
         self.cmd("{} REL {}", ax, dst/1000)
 
+    def pos(self, cb):
+        def f(s):
+            m = re.match(f"#{num},{num}\n\r#{num},{num}", s)
+            cb( float(m[1])*1000, float(m[3])*1000 )
+
+        self.cmd("0 POS?").callback((lambda s: f("#11.111111,0.0\n\r#12.222222,0.0")) if self.dummy else f)
+
+    def err(self, cb):
+        self.cmd("0 ERR?").callback(cb)
+
+
 class Piezo(Device):
     usb_id = (0x0403, 0x6010)
     args = (460800, 8, 'N', 1)
@@ -123,6 +136,31 @@ class Piezo(Device):
     def move(self, vel, dst): # absolute
         self.cmd("VEL 1 {}", vel)
         self.cmd("MOV 1 {}", dst)
+
+    def pos(self, cb):
+        def f(s):
+            m = re.match(f"1={num}", s)
+            cb( float(m[1]) )
+
+        self.cmd("POS?").callback((lambda s: f("1=14.444444")) if self.dummy else f)
+
+    def volt(self, cb):
+        def f(s):
+            m = re.match(f"2={num}", s)
+            cb( float(m[1]) )
+
+        self.cmd("VOL? 2").callback((lambda s: f("2=9.999999")) if self.dummy else f)
+
+
+    def err(self, cb):
+        def f(s):
+            m = re.match(r"(\d+)", s)
+            cb( int(m[1]) )
+
+        self.cmd("ERR?").callback((lambda s: f("0")) if self.dummy else f)
+
+
+
 
 class Z(Device):
     usb_id = (0x2341, 0x003d)
@@ -150,6 +188,15 @@ class Z(Device):
     def move(self, vel, dst): # relative
         self.cmd("vel {}", int(round(vel/self.step_size)))
         self.cmd("rel {}", int(round(dst/self.step_size)))
+
+    def pos(self, cb):
+        def f(s):
+            m = re.match(r"pos ([+-]?\d+) target ([+-]?\d+) vel (\d+) lim1 ([01]) lim2 ([01])", s)
+            z = int(m[1])*self.step_size
+            lim = int(m[4]) or int(m[5])
+            cb(z, lim)
+
+        self.cmd("?").callback((lambda s: f("pos 85333 target 85333 vel 500 lim1 1 lim2 0")) if self.dummy else f)
 
 
 import numpy as np
@@ -186,7 +233,7 @@ class ADC(Device):
                     data = ser.read(self.N*4*4)
                     data = np.frombuffer(data, dtype=np.int32).reshape(self.N, 4)*10/0x1ffff
 
-                self.info("-> data") 
+                self.info("-> data")
 
                 if self.callback:
                     self.callback(data)
@@ -195,7 +242,7 @@ class ADC(Device):
                     future.set_result(data)
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
 #    Device.dummy = True
 
     logging.basicConfig(level=logging.INFO)
@@ -209,7 +256,7 @@ if __name__ == "__main__":
             print( xy.cmd("0 ERR?").result() )
             print( xy.cmd("0 MOT?").result() )
             print( xy.cmd("0 REZ?").result() )
-            
+
             print( xy.cmd("0 AMX?").result() )
             print( xy.cmd("0 ACC?").result() )
             print( xy.cmd("0 DEC?").result() )

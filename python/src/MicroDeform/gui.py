@@ -18,9 +18,6 @@ import logging
 # max speed:  [5um/s]
 # accel:      default
 
-import re
-num = r"([+-]?\d*\.?\d+(?:[eE][+-]?\d+)?)"
-
 from PySide6.QtWidgets import QApplication, QMessageBox, QFileDialog, QMainWindow
 from PySide6.QtCore import Signal, Qt, QSignalBlocker
 from PySide6.QtGui import QPalette
@@ -38,12 +35,12 @@ def setColor(obj, role, color=None):
 
 class Window(QMainWindow):
     adc_data = Signal(object)
-    xy_pos = Signal(str)
+    xy_pos = Signal(float, float)
     xy_err = Signal(str)
-    z_pos = Signal(str)
-    fz_pos = Signal(str)
-    fz_volt = Signal(str)
-    fz_err = Signal(str)
+    z_pos = Signal(float, int)
+    fz_pos = Signal(float)
+    fz_volt = Signal(float)
+    fz_err = Signal(int)
     #fz_status = Signal(str)
 
     def __init__(self, md):
@@ -334,17 +331,17 @@ class MicroDeform:
 
     def Tick(self):
         if self.ui.QueryXYposition.isChecked():
-            self.xy.cmd("0 POS ?").callback( self.window.xy_pos.emit )
+            self.xy.pos( self.window.xy_pos.emit )
         if self.ui.QueryXYerror.isChecked():
-            self.xy.cmd("0 ERR ?").callback( self.window.xy_err.emit )
+            self.xy.err( self.window.xy_err.emit )
         if self.ui.QueryZposition.isChecked():
-            self.z.cmd("?").callback( self.window.z_pos.emit )
+            self.z.pos( self.window.z_pos.emit )
         if self.ui.QueryFineZposition.isChecked():
-            self.fz.cmd("POS?").callback( self.window.fz_pos.emit )
+            self.fz.pos( self.window.fz_pos.emit )
         if self.ui.QueryFineZvoltage.isChecked():
-            self.fz.cmd("VOL? 2").callback( self.window.fz_volt.emit )
+            self.fz.volt( self.window.fz_volt.emit )
         if self.ui.QueryFineZerror.isChecked():
-            self.fz.cmd("ERR?").callback( self.window.fz_err.emit )
+            self.fz.err( self.window.fz_err.emit )
 
         #self.fz.cmd("WGO?").callback( self.window.fz_status.emit )
 
@@ -428,9 +425,7 @@ class MicroDeform:
         self.fz.cmd("WOS 1 {}", offset) # offset
         self.fz.cmd("WGO 1 257") # start, final position is the endpoint
 
-    def xy_pos(self, s):
-        m = re.match(f"#{num},{num}\n\r#{num},{num}", s)
-        x, y = float(m[1])*1000, float(m[3])*1000
+    def xy_pos(self, x, y):
         self.ui.XPos.setText(f"{x: .3f} μm")
         self.ui.YPos.setText(f"{y: .3f} μm")
 
@@ -440,27 +435,18 @@ class MicroDeform:
             self.msgbox.setText(s)
             self.msgbox.show()
 
-    def z_pos(self, s):
-        m = re.match(r"pos ([+-]?\d+) target ([+-]?\d+) vel (\d+) lim1 ([01]) lim2 ([01])", s)
-        z = int(m[1])*self.z.step_size
-        lim = int(m[4]) or int(m[5])
+    def z_pos(self, z, lim):
         self.ui.ZPos.setText(f"{z: .3f} μm")
         setColor(self.ui.ZPos, QPalette.WindowText, Qt.red if lim else None)
 
-    def fz_pos(self, s):
-        m = re.match(f"1={num}", s)
-        v = float(m[1])
+    def fz_pos(self, v):
         self.ui.PosAbs2.setText(f"{v} μm")
         self.ui.FZPos.setText(f"{v: .3f} μm")
 
-    def fz_volt(self, s):
-        m = re.match(f"2={num}", s)
-        v = float(m[1])
+    def fz_volt(self, v):
         self.ui.PosRaw2.setText(f"{v} V")
 
-    def fz_err(self, s):
-        m = re.match(r"(\d+)", s)
-        err = int(m[1])
+    def fz_err(self, err):
         if err not in (0, 10):
             self.msgbox.setWindowTitle("Fine Z Error")
             self.msgbox.setText(f"Error {err}: {fz_errors[err]}")
