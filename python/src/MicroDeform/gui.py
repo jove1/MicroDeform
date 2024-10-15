@@ -57,10 +57,12 @@ class Window(QMainWindow):
         self.fz_volt.connect( md.fz_volt )
         self.fz_err.connect( md.fz_err )
         #self.fz_status.connect( md.fz_status )
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     def keyPressEvent(self, ev):
         if ev.isAutoRepeat():
             return
+        self.logger.info("keyPressEvent(%s)", ev)
 
         key = ev.key()
         if key == Qt.Key_Escape:       self.md.AllStop()
@@ -231,13 +233,14 @@ class MicroDeform:
         ui.UnloadStepNorm.valueChanged.connect( lambda val: setValueNoSignal(ui.UnloadStep, self.UnloadStepNorm*self.Length) )
         ui.UnloadSpeedNorm.valueChanged.connect( lambda val: setValueNoSignal(ui.UnloadSpeed, self.UnloadSpeedNorm*self.Length) )
 
-        logActions = [ui.LogXY, ui.LogZ, ui.LogFineZ, ui.LogADC]
+        logActions = [ui.LogXY, ui.LogZ, ui.LogFineZ, ui.LogADC, ui.LogKeyboard]
         ui.LogAll.triggered.connect( lambda checked: [a.setChecked(True) for a in logActions] )
         ui.LogNone.triggered.connect( lambda checked: [a.setChecked(False) for a in logActions] )
         ui.LogXY.toggled.connect( lambda checked: self.xy.logger.setLevel(logging.DEBUG if checked else logging.WARNING) )
         ui.LogZ.toggled.connect( lambda checked: self.z.logger.setLevel(logging.DEBUG if checked else logging.WARNING) )
         ui.LogFineZ.toggled.connect( lambda checked: self.fz.logger.setLevel(logging.DEBUG if checked else logging.WARNING) )
         ui.LogADC.toggled.connect( lambda checked: self.adc.logger.setLevel(logging.DEBUG if checked else logging.WARNING) )
+        ui.LogKeyboard.toggled.connect( lambda checked: self.window.logger.setLevel(logging.DEBUG if checked else logging.WARNING) )
 
         queryActions = [ui.QueryXYposition, ui.QueryXYerror, ui.QueryZposition, ui.QueryFineZposition, ui.QueryFineZvoltage, ui.QueryFineZerror]
         ui.QueryAll.triggered.connect( lambda checked: [a.setChecked(True) for a in queryActions] )
@@ -541,6 +544,7 @@ def main():
         z.logger.setLevel(logging.DEBUG if md.ui.LogZ.isChecked() else logging.WARNING)
         fz.logger.setLevel(logging.DEBUG if md.ui.LogFineZ.isChecked() else logging.WARNING)
         adc.logger.setLevel(logging.DEBUG if md.ui.LogADC.isChecked() else logging.WARNING)
+        md.window.logger.setLevel(logging.DEBUG if md.ui.LogKeyboard.isChecked() else logging.WARNING)
 
 
         xy_ver = xy.cmd("0 VER ?").result()

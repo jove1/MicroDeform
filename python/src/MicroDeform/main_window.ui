@@ -938,6 +938,7 @@ Unload</string>
     <addaction name="LogZ"/>
     <addaction name="LogFineZ"/>
     <addaction name="LogADC"/>
+    <addaction name="LogKeyboard"/>
    </widget>
    <widget class="QMenu" name="menuQuery">
     <property name="title">
@@ -1072,6 +1073,14 @@ Unload</string>
   <action name="QueryNone">
    <property name="text">
     <string>None</string>
+   </property>
+  </action>
+  <action name="LogKeyboard">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Keyboard</string>
    </property>
   </action>
   <actiongroup name="groupTest">
