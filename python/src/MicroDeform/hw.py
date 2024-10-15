@@ -38,7 +38,6 @@ class Device:
         self.thread = threading.Thread(target=self.run)
         
         self.info = self.logger.info
-        self.start = self.thread.start
 
         self.dummy = dummy
         if dummy:
@@ -88,16 +87,13 @@ class Device:
         self.queue.put( (cmd, read, future) )
         return future
 
-    def stop(self):
-        self.queue.put( ("STOP", None, None) )
-        self.thread.join()
-
     def __enter__(self):
-        self.start()
+        self.thread.start()
         return self
 
     def __exit__(self, *args):
-        self.stop()
+        self.queue.put( ("STOP", None, None) )
+        self.thread.join()
 
 
 class XY(Device):
@@ -109,17 +105,51 @@ class XY(Device):
         self.cmd("0 MOT", 0)
         super().__exit__(*args)
 
+    def stop(self, ax):
+        self.cmd("{} STP", ax)
+
+    def move(sefl, ax, vel, dst): # relative
+        self.cmd("{} VEL {}", ax, vel/1000)
+        self.cmd("{} REL {}", ax, dst/1000)
 
 class Piezo(Device):
     usb_id = (0x0403, 0x6010)
     args = (460800, 8, 'N', 1)
     kwargs = dict(rtscts=True)
 
+    def stop(self):
+        self.cmd("STP")
+
+    def move(self, vel, dst): # absolute
+        self.cmd("VEL 1 {}", vel)
+        self.cmd("MOV 1 {}", dst)
 
 class Z(Device):
     usb_id = (0x2341, 0x003d)
     args = (115200, 8, 'N', 1)
     wait = 0.3
+
+    # 0 - 1 step
+    # 1 - 1/2 step
+    # 2 - 1/16 step
+    # 3 - 1/8 step
+    ustep_table = [1, 2, 16, 8]
+    ustep_setting = 2
+    ustep = ustep_table[ustep_setting]
+    step_size = 2.5/ustep
+
+    def __enter__(self):
+        super().__enter__()
+        self.cmd("?").callback(print)
+        self.cmd("ustep {}", self.ustep_setting)
+        return self
+
+    def stop(self):
+        self.cmd("rel 0")
+
+    def move(self, vel, dst): # relative
+        self.cmd("vel {}", int(round(vel/self.step_size)))
+        self.cmd("rel {}", int(round(dst/self.step_size)))
 
 
 import numpy as np

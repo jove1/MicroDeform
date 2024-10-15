@@ -187,18 +187,34 @@ class MicroDeform:
         self.load_hi = 6
         self.load_lo = -6
 
-        self.z_ustep = 16
-        self.z_step_size = 2.5/self.z_ustep
-
         self.window = Window(self)
+
+        try:
+            self.xy = hw.XY()
+        except:
+            self.xy = hw.XY(dummy=True)
+        try:
+            self.z = hw.Z()
+        except:
+            self.z = hw.Z(dummy=True)
+        try:
+            self.fz = hw.Piezo()
+        except:
+            self.fz = hw.Piezo(dummy=True)
+        try:
+            self.adc = hw.ADC(self.window.adc_data.emit)
+        except:
+            self.adc = hw.ADC(self.window.adc_data.emit, dummy=True)
+
+
         self.ui = ui = Ui_MainWindow()
         ui.setupUi(self.window)
 
         setColor(self.ui.Stop, QPalette.Button, Qt.red)
         setColor(self.ui.Record, QPalette.Button, Qt.darkGreen)
 
-        self.ui.ZSpeed.setMinimum(self.z_step_size)
-        self.ui.ZSpeed.setMaximum(1000*self.z_step_size)
+        self.ui.ZSpeed.setMinimum(self.z.step_size)
+        self.ui.ZSpeed.setMaximum(1000*self.z.step_size)
 
         ui.Length.valueChanged.connect( lambda val: setValueNoSignal(ui.LoadStepNorm, self.LoadStep/self.Length) )
         ui.Length.valueChanged.connect( lambda val: setValueNoSignal(ui.LoadSpeedNorm, self.LoadSpeed/self.Length) )
@@ -293,23 +309,6 @@ class MicroDeform:
         self.msgbox = QMessageBox(QMessageBox.Warning, "Error", "", parent=self.window)
         self.msgbox.setWindowModality(Qt.NonModal)
 
-        try:
-            self.xy = hw.XY()
-        except:
-            self.xy = hw.XY(dummy=True)
-        try:
-            self.z = hw.Z()
-        except:
-            self.z = hw.Z(dummy=True)
-        try:
-            self.fz = hw.Piezo()
-        except:
-            self.fz = hw.Piezo(dummy=True)
-        try:
-            self.adc = hw.ADC(self.window.adc_data.emit)
-        except:
-            self.adc = hw.ADC(self.window.adc_data.emit, dummy=True)
-
         self.window.setFocus()
         self.window.show()
         self.window.startTimer(500)
@@ -346,39 +345,39 @@ class MicroDeform:
         #self.fz.cmd("WGO?").callback( self.window.fz_status.emit )
 
 
-    def XPlus(self):   self.xy.cmd("1 VEL {}", self.XSpeed/1000); self.xy.cmd("1 MVR 12"); self.Xmoving = True
-    def XMinus(self):  self.xy.cmd("1 VEL {}", self.XSpeed/1000); self.xy.cmd("1 MVR -12"); self.Xmoving = True
+    def XPlus(self):   self.xy.move(1, self.XSpeed, +12000); self.Xmoving = True
+    def XMinus(self):  self.xy.move(1, self.XSpeed, -12000); self.Xmoving = True
     def XStop(self):
         if self.Xmoving:
-            self.xy.cmd("1 STP")
+            self.xy.stop(1)
             self.Xmoving = False
 
-    def YPlus(self):   self.xy.cmd("2 VEL {}", self.YSpeed/1000); self.xy.cmd("2 MVR 12"); self.Ymoving = True
-    def YMinus(self):  self.xy.cmd("2 VEL {}", self.YSpeed/1000); self.xy.cmd("2 MVR -12"); self.Ymoving = True
+    def YPlus(self):   self.xy.move(2, self.YSpeed, +12000); self.Ymoving = True
+    def YMinus(self):  self.xy.move(2, self.YSpeed, -12000); self.Ymoving = True
     def YStop(self):
         if self.Ymoving:
-            self.xy.cmd("2 STP")
+            self.xy.stop(2)
             self.Ymoving = False
 
-    def ZPlus(self):   self.z.cmd("vel {}", int(round(self.ZSpeed/self.z_step_size)) ); self.z.cmd("rel {}", 5000*self.z_ustep); self.Zmoving = True
-    def ZMinus(self):  self.z.cmd("vel {}", int(round(self.ZSpeed/self.z_step_size)) ); self.z.cmd("rel {}", -5000*self.z_ustep); self.Zmoving = True
+    def ZPlus(self):   self.z.move(self.ZSpeed, +12500); self.Zmoving = True
+    def ZMinus(self):  self.z.move(self.ZSpeed, -12500); self.Zmoving = True
     def ZStop(self):
         if self.Zmoving:
-            self.z.cmd("rel 0")
+            self.z.stop()
             self.Zmoving = False
 
-    def FZPlus(self):  self.fz.cmd("VEL 1 {}", self.FZSpeed); self.fz.cmd("MOV 1 30"); self.FZmoving = True
-    def FZMinus(self): self.fz.cmd("VEL 1 {}", self.FZSpeed); self.fz.cmd("MOV 1 0"); self.FZmoving = True
+    def FZPlus(self):  self.fz.move(self.FZSpeed, 30); self.FZmoving = True
+    def FZMinus(self): self.fz.move(self.FZSpeed, 0); self.FZmoving = True
     def FZStop(self):
         if self.FZmoving:
-            self.fz.cmd("STP")
+            self.fz.stop()
             self.FZmoving = False
 
     def AllStop(self):
-        self.z.cmd("rel 0")
+        self.z.stop()
         self.xy.cmd("0 STP")
         #self.xy.cmd("0 EST") # emergency stop
-        self.fz.cmd("STP")
+        self.fz.stop()
 
     def Record(self):
         if self.fh:
@@ -439,7 +438,7 @@ class MicroDeform:
 
     def z_pos(self, s):
         m = re.match(r"pos ([+-]?\d+) target ([+-]?\d+) vel (\d+) lim1 ([01]) lim2 ([01])", s)
-        z = int(m[1])*self.z_step_size
+        z = int(m[1])*self.z.step_size
         lim = int(m[4]) or int(m[5])
         self.ui.ZPos.setText(f"{z:.1f} μm")
         setColor(self.ui.ZPos, QPalette.WindowText, Qt.red if lim else None)
@@ -543,12 +542,6 @@ def main():
         fz.logger.setLevel(logging.DEBUG if md.ui.LogFineZ.isChecked() else logging.WARNING)
         adc.logger.setLevel(logging.DEBUG if md.ui.LogADC.isChecked() else logging.WARNING)
 
-        z.cmd("ustep {}", {1:0, 2:1, 8:3, 16:2}[md.z_ustep] )
-        # 0 - 1 step
-        # 1 - 1/2 step
-        # 2 - 1/16 step
-        # 3 - 1/8 step
-        z.cmd("?").callback(print)
 
         xy_ver = xy.cmd("0 VER ?").result()
         print(xy_ver)
