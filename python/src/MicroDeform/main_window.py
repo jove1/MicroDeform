@@ -754,7 +754,7 @@ class Ui_MainWindow(object):
         self.ZPlus.setText(QCoreApplication.translate("MainWindow", u"Z+", None))
         self.ZSpeed.setSuffix(QCoreApplication.translate("MainWindow", u" \u03bcm/s", None))
         self.ZMinus.setText(QCoreApplication.translate("MainWindow", u"Z-", None))
-        self.ZPos.setText(QCoreApplication.translate("MainWindow", u"\u00b112000.5 \u03bcm", None))
+        self.ZPos.setText(QCoreApplication.translate("MainWindow", u"\u00b112000.000 \u03bcm", None))
         self.YPlus.setText(QCoreApplication.translate("MainWindow", u"Y+", None))
         self.XPos.setText(QCoreApplication.translate("MainWindow", u"\u00b112000.000 \u03bcm", None))
         self.YPos.setText(QCoreApplication.translate("MainWindow", u"\u00b112000.000 \u03bcm", None))

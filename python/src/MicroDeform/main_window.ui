@@ -550,7 +550,7 @@ Unload</string>
          <item row="5" column="3">
           <widget class="QLabel" name="ZPos">
            <property name="text">
-            <string>±12000.5 μm</string>
+            <string>±12000.000 μm</string>
            </property>
           </widget>
          </item>

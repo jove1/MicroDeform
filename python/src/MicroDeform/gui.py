@@ -183,8 +183,9 @@ class MicroDeform:
         self.cycle_time = 50e-6 # SPA? 1 0x0E000200
         self.wave_memory = 8192 # SPA? 1 0x13000004
 
-        self.position_calib = lambda x: x/0.66666666 + 15 # nominal calibration
-        self.load_calib = lambda x: x*3.434329*9.806 # mN
+        self.calib_position = lambda x: x/0.66666666 + 15 # um/V, nominal calibration
+        self.calib_load = 3.434329*9.806 # mN/V
+        self.calib_spring = 13.94  # mN/um
 
         self.load_hi = 6
         self.load_lo = -6
@@ -430,8 +431,8 @@ class MicroDeform:
     def xy_pos(self, s):
         m = re.match(f"#{num},{num}\n\r#{num},{num}", s)
         x, y = float(m[1])*1000, float(m[3])*1000
-        self.ui.XPos.setText(f"{x:.3f} μm")
-        self.ui.YPos.setText(f"{y:.3f} μm")
+        self.ui.XPos.setText(f"{x: .3f} μm")
+        self.ui.YPos.setText(f"{y: .3f} μm")
 
     def xy_err(self, s):
         if s:
@@ -443,14 +444,14 @@ class MicroDeform:
         m = re.match(r"pos ([+-]?\d+) target ([+-]?\d+) vel (\d+) lim1 ([01]) lim2 ([01])", s)
         z = int(m[1])*self.z.step_size
         lim = int(m[4]) or int(m[5])
-        self.ui.ZPos.setText(f"{z:.1f} μm")
+        self.ui.ZPos.setText(f"{z: .3f} μm")
         setColor(self.ui.ZPos, QPalette.WindowText, Qt.red if lim else None)
 
     def fz_pos(self, s):
         m = re.match(f"1={num}", s)
         v = float(m[1])
         self.ui.PosAbs2.setText(f"{v} μm")
-        self.ui.FZPos.setText(f"{v:.3f} μm")
+        self.ui.FZPos.setText(f"{v: .3f} μm")
 
     def fz_volt(self, s):
         m = re.match(f"2={num}", s)
@@ -473,31 +474,33 @@ class MicroDeform:
     #    self.was_running = running
 
     def adc_data(self, data):
-        m = data.mean(axis=0)
-        s = data.std(axis=0)
-        self.ui.PosRaw.setText(f"{m[0]: .6f}\n±{s[0]:.6f} V")
-        self.ui.LoadRaw.setText(f"{m[1]: .6f}\n±{s[1]:.6f} V")
+        pos, load = data[:,0], data[:,1]
 
-        v = np.round((m+10)/20*1000)
-        self.ui.PosBar.setValue(v[0])
-        self.ui.LoadBar.setValue(v[1])
-        self.ui.PosBar.setFormat(f"{m[0]: .1f} V")
-        self.ui.LoadBar.setFormat(f"{m[1]: .1f} V")
+        pos_m, pos_s = pos.mean(), pos.std()
+        load_m, load_s = load.mean(), load.std()
 
-        setColor(self.ui.LoadBar, QPalette.Highlight, Qt.darkGreen if self.load_lo < m[1] < self.load_hi else Qt.red)
+        self.ui.PosRaw.setText(f"{pos_m: .6f}\n±{pos_s:.6f} V")
+        self.ui.LoadRaw.setText(f"{load_m: .6f}\n±{load_s:.6f} V")
 
-        data[:,0] = self.position_calib(data[:,0])
-        data[:,1] = self.load_calib(data[:,1])
+        self.ui.PosBar.setValue( (pos_m+10)/20*1000 )
+        self.ui.LoadBar.setValue( (load_m+10)/20*1000 )
+        self.ui.PosBar.setFormat(f"{pos_m: .1f} V")
+        self.ui.LoadBar.setFormat(f"{load_m: .1f} V")
+
+        setColor(self.ui.LoadBar, QPalette.Highlight, Qt.darkGreen if self.load_lo < load_m < self.load_hi else Qt.red)
+
+
+        pos = self.calib_position(pos)
+        load = self.calib_load * load
 
         if self.fh:
             self.fh.write(data)
 
-        m = data.mean(axis=0)
-        s = data.std(axis=0)
-        pos, load = m[0], m[1]
+        load, load_s = load.mean(), load.std()
+        pos, pos_s = pos.mean(), pos.std()
 
-        self.ui.PosAbs.setText(f"{pos: .6f}\n±{s[0]:.6f} μm")
-        self.ui.LoadAbs.setText(f"{load: .3f}\n±{s[1]:.3f} mN")
+        self.ui.PosAbs.setText(f"{pos: .6f}\n±{pos_s:.6f} μm")
+        self.ui.LoadAbs.setText(f"{load: .3f}\n±{load_s:.3f} mN")
 
         self.last_pos = pos
         self.last_load = load
