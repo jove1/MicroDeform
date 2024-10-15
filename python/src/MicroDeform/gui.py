@@ -254,15 +254,13 @@ class MicroDeform:
         #
         self.history = History(10000)
 
-        self.monitor_lines = twinx_plot(ui.plotMonitor, "Position", "Load")
-        self.history_lines = twinx_plot(ui.plotHistory, "Position", "Load")
+        self.monitor_lines = twinx_plot(ui.plotMonitor, "Raw Pos. [V]", "Raw Load [V]")
+        self.history_lines = twinx_plot(ui.plotHistory, "Position [μm]", "Load [mN]")
 
         ui.plotXY.plot([], [], pen=(0,2), title="XY")
         ui.plotXY.plot([], [], symbolBrush=None, symbolPen=(1,2), symbol="o" )
         self.xy_lines = ui.plotXY.listDataItems()
 
-        ui.PlotTime.toggled.connect( lambda checked: ui.stackedWidget.setCurrentIndex(0) if checked else None)
-        ui.PlotXY.toggled.connect( lambda checked: ui.stackedWidget.setCurrentIndex(1) if checked else None)
         ui.PlotClear.clicked.connect( lambda checked: self.history.clear() )
 
         #
@@ -397,6 +395,8 @@ class MicroDeform:
 'length': {self.Length},
 'zero_pos': {self.zero_pos},
 'zero_load': {self.zero_load},
+'calib_spring': {self.calib_spring},
+'calib_load': {self.calib_load},
 }}""")
             self.fh = open(fname, "wb")
             self.ui.Record.setText("Stop")
@@ -440,11 +440,11 @@ class MicroDeform:
         setColor(self.ui.ZPos, QPalette.WindowText, Qt.red if lim else None)
 
     def fz_pos(self, v):
-        self.ui.PosAbs2.setText(f"{v} μm")
         self.ui.FZPos.setText(f"{v: .3f} μm")
+        self.ui.PosAbs2.setText(f"{v: .6f} μm")
 
     def fz_volt(self, v):
-        self.ui.PosRaw2.setText(f"{v} V")
+        self.ui.PosRaw2.setText(f"{v: .6f} V")
 
     def fz_err(self, err):
         if err not in (0, 10):
@@ -460,7 +460,15 @@ class MicroDeform:
     #    self.was_running = running
 
     def adc_data(self, data):
+        #
+        # Raw values [V]
+        #
+
         pos, load = data[:,0], data[:,1]
+
+        x = np.arange(len(data))
+        self.monitor_lines[0].setData(x, data[:,0])
+        self.monitor_lines[1].setData(x, data[:,1])
 
         pos_m, pos_s = pos.mean(), pos.std()
         load_m, load_s = load.mean(), load.std()
@@ -475,48 +483,66 @@ class MicroDeform:
 
         setColor(self.ui.LoadBar, QPalette.Highlight, Qt.darkGreen if self.load_lo < load_m < self.load_hi else Qt.red)
 
+        #
+        # Calibrated values [um], [mN]
+        #
 
         pos = self.calib_position(pos)
         load = self.calib_load * load
 
         if self.fh:
-            self.fh.write(data)
+            self.fh.write(np.transpose([pos,load]))
 
-        load, load_s = load.mean(), load.std()
-        pos, pos_s = pos.mean(), pos.std()
+        load_m, load_s = load.mean(), load.std()
+        pos_m, pos_s = pos.mean(), pos.std()
 
-        self.ui.PosAbs.setText(f"{pos: .6f}\n±{pos_s:.6f} μm")
-        self.ui.LoadAbs.setText(f"{load: .3f}\n±{load_s:.3f} mN")
+        self.ui.PosAbs.setText(f"{pos_m: .6f}\n±{pos_s:.6f} μm")
+        self.ui.LoadAbs.setText(f"{load_m: .3f}\n±{load_s:.3f} mN")
 
-        self.last_pos = pos
-        self.last_load = load
+        self.last_pos = pos_m
+        self.last_load = load_m
 
+        self.history.update([pos_m], [load_m])
+        h = self.History
+        time = np.array(self.history.x[-h:]) * self.adc.N / self.adc.rate
+        pos = np.array(self.history.y1[-h:])
+        load = np.array(self.history.y2[-h:])
+
+        #
+        # Zero, compression/tension flip and normalization [um/um], [MPa]
+        #
+
+        pos_m -= self.zero_pos
         pos -= self.zero_pos
+        load_m -= self.zero_load
         load -= self.zero_load
         if self.ui.Compression.isChecked():
+            load_m *= -1
             load *= -1
         else:
+            pos_m *= -1
             pos *= -1
 
+        self.ui.PosRel.setText(f"{pos_m: .6f} μm")
+        self.ui.LoadRel.setText(f"{load_m: .3f} mN")
 
-        self.ui.PosRel.setText(f"{pos: .6f} μm")
-        self.ui.LoadRel.setText(f"{load: .3f} mN")
+        self.ui.PosNorm.setText(f"{pos_m/self.Length: .6f} μm/μm")
+        self.ui.LoadNorm.setText(f"{load_m/self.Area*1000: .3f} MPa")
 
-        self.ui.PosNorm.setText(f"{pos/self.Length: .6f} μm/μm")
-        self.ui.LoadNorm.setText(f"{load/self.Area*1000: .3f} MPa")
 
-        x = np.arange(len(data))
-        self.monitor_lines[0].setData(x, data[:,0])
-        self.monitor_lines[1].setData(x, data[:,1])
+        idx = self.ui.PlotType.currentIndex()
+        if idx in (1, 3):
+            pos -= load/self.calib_spring
 
-        self.history.update([pos], [load])
-        x = np.array(self.history.x) * self.adc.N / self.adc.rate
-        self.history_lines[0].setData(x, self.history.y1)
-        self.history_lines[1].setData(x, self.history.y2)
+        if idx in (0, 1):
+            self.ui.stackedWidget.setCurrentIndex(0)
+            self.history_lines[0].setData(time, pos)
+            self.history_lines[1].setData(time, load)
 
-        self.xy_lines[0].setData(self.history.y1, self.history.y2)
-        self.xy_lines[1].setData(self.history.y1[-1:], self.history.y2[-1:])
-
+        elif idx in (2, 3):
+            self.ui.stackedWidget.setCurrentIndex(1)
+            self.xy_lines[0].setData(pos, load)
+            self.xy_lines[1].setData(pos[-1:], load[-1:])
 
 
 

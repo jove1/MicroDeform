@@ -16,11 +16,12 @@ from PySide6.QtGui import (QAction, QActionGroup, QBrush, QColor,
     QGradient, QIcon, QImage, QKeySequence,
     QLinearGradient, QPainter, QPalette, QPixmap,
     QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QDoubleSpinBox, QGridLayout,
-    QGroupBox, QLabel, QLayout, QLineEdit,
-    QMainWindow, QMenu, QMenuBar, QProgressBar,
-    QPushButton, QRadioButton, QSizePolicy, QStackedWidget,
-    QStatusBar, QWidget)
+from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QComboBox, QDoubleSpinBox,
+    QGridLayout, QGroupBox, QLabel, QLayout,
+    QLineEdit, QMainWindow, QMenu, QMenuBar,
+    QProgressBar, QPushButton, QRadioButton, QSizePolicy,
+    QSpacerItem, QSpinBox, QStackedWidget, QStatusBar,
+    QWidget)
 
 from pyqtgraph import PlotWidget
 
@@ -278,26 +279,14 @@ class Ui_MainWindow(object):
         self.gPlot.setObjectName(u"gPlot")
         self.gridLayout_5 = QGridLayout(self.gPlot)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.PlotTime = QRadioButton(self.gPlot)
-        self.PlotTime.setObjectName(u"PlotTime")
-        self.PlotTime.setChecked(True)
+        self.PlotType = QComboBox(self.gPlot)
+        self.PlotType.addItem("")
+        self.PlotType.addItem("")
+        self.PlotType.addItem("")
+        self.PlotType.addItem("")
+        self.PlotType.setObjectName(u"PlotType")
 
-        self.gridLayout_5.addWidget(self.PlotTime, 0, 0, 1, 1)
-
-        self.PlotXY = QRadioButton(self.gPlot)
-        self.PlotXY.setObjectName(u"PlotXY")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.PlotXY.sizePolicy().hasHeightForWidth())
-        self.PlotXY.setSizePolicy(sizePolicy1)
-
-        self.gridLayout_5.addWidget(self.PlotXY, 1, 0, 1, 1)
-
-        self.PlotClear = QPushButton(self.gPlot)
-        self.PlotClear.setObjectName(u"PlotClear")
-
-        self.gridLayout_5.addWidget(self.PlotClear, 1, 1, 1, 1)
+        self.gridLayout_5.addWidget(self.PlotType, 0, 0, 1, 1)
 
         self.stackedWidget = QStackedWidget(self.gPlot)
         self.stackedWidget.setObjectName(u"stackedWidget")
@@ -308,7 +297,30 @@ class Ui_MainWindow(object):
         self.plotXY.setObjectName(u"plotXY")
         self.stackedWidget.addWidget(self.plotXY)
 
-        self.gridLayout_5.addWidget(self.stackedWidget, 3, 0, 1, 2)
+        self.gridLayout_5.addWidget(self.stackedWidget, 2, 0, 1, 5)
+
+        self.PlotClear = QPushButton(self.gPlot)
+        self.PlotClear.setObjectName(u"PlotClear")
+
+        self.gridLayout_5.addWidget(self.PlotClear, 0, 4, 1, 1)
+
+        self.label_7 = QLabel(self.gPlot)
+        self.label_7.setObjectName(u"label_7")
+
+        self.gridLayout_5.addWidget(self.label_7, 0, 2, 1, 1)
+
+        self.History = QSpinBox(self.gPlot)
+        self.History.setObjectName(u"History")
+        self.History.setMinimum(1)
+        self.History.setMaximum(10000)
+        self.History.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
+        self.History.setValue(100)
+
+        self.gridLayout_5.addWidget(self.History, 0, 3, 1, 1)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout_5.addItem(self.horizontalSpacer, 0, 1, 1, 1)
 
 
         self.gridLayout.addWidget(self.gPlot, 2, 0, 1, 1)
@@ -333,11 +345,11 @@ class Ui_MainWindow(object):
 
         self.label_26 = QLabel(self.gFine)
         self.label_26.setObjectName(u"label_26")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.label_26.sizePolicy().hasHeightForWidth())
-        self.label_26.setSizePolicy(sizePolicy2)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.label_26.sizePolicy().hasHeightForWidth())
+        self.label_26.setSizePolicy(sizePolicy1)
 
         self.gridLayout_8.addWidget(self.label_26, 0, 0, 1, 1)
 
@@ -361,11 +373,11 @@ class Ui_MainWindow(object):
 
         self.Stop = QPushButton(self.centralwidget)
         self.Stop.setObjectName(u"Stop")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.Stop.sizePolicy().hasHeightForWidth())
-        self.Stop.setSizePolicy(sizePolicy3)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.Stop.sizePolicy().hasHeightForWidth())
+        self.Stop.setSizePolicy(sizePolicy2)
 
         self.gridLayout_2.addWidget(self.Stop, 0, 1, 2, 1)
 
@@ -460,11 +472,11 @@ class Ui_MainWindow(object):
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.plotMonitor = PlotWidget(self.gADCMonitor)
         self.plotMonitor.setObjectName(u"plotMonitor")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.plotMonitor.sizePolicy().hasHeightForWidth())
-        self.plotMonitor.setSizePolicy(sizePolicy4)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.plotMonitor.sizePolicy().hasHeightForWidth())
+        self.plotMonitor.setSizePolicy(sizePolicy3)
 
         self.gridLayout_4.addWidget(self.plotMonitor, 0, 0, 1, 1)
 
@@ -656,7 +668,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1021, 22))
+        self.menubar.setGeometry(QRect(0, 0, 1120, 22))
         self.menuLog = QMenu(self.menubar)
         self.menuLog.setObjectName(u"menuLog")
         self.menuQuery = QMenu(self.menubar)
@@ -736,9 +748,13 @@ class Ui_MainWindow(object):
         self.LoadSpeed.setSuffix(QCoreApplication.translate("MainWindow", u" \u03bcm/s", None))
         self.LoadSpeedNorm.setSuffix(QCoreApplication.translate("MainWindow", u" 1/s", None))
         self.gPlot.setTitle(QCoreApplication.translate("MainWindow", u"Plot", None))
-        self.PlotTime.setText(QCoreApplication.translate("MainWindow", u"Load(Time); Position(Time)", None))
-        self.PlotXY.setText(QCoreApplication.translate("MainWindow", u"Load(Position)", None))
+        self.PlotType.setItemText(0, QCoreApplication.translate("MainWindow", u"Load and Position vs. Time", None))
+        self.PlotType.setItemText(1, QCoreApplication.translate("MainWindow", u"Load and Position-Load/Spring vs. Time", None))
+        self.PlotType.setItemText(2, QCoreApplication.translate("MainWindow", u"Load vs. Position", None))
+        self.PlotType.setItemText(3, QCoreApplication.translate("MainWindow", u"Load vs. Position-Load/Spring", None))
+
         self.PlotClear.setText(QCoreApplication.translate("MainWindow", u"Clear", None))
+        self.label_7.setText(QCoreApplication.translate("MainWindow", u"History", None))
         self.gFine.setTitle(QCoreApplication.translate("MainWindow", u"Fine movement", None))
         self.FZSpeed.setSuffix(QCoreApplication.translate("MainWindow", u" \u03bcm/s", None))
         self.label_26.setText(QCoreApplication.translate("MainWindow", u"Speed", None))

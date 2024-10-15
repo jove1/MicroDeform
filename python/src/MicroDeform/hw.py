@@ -225,10 +225,13 @@ class ADC(Device):
 
                 if self.dummy:
                     global pos
-                    time.sleep(self.N/20000)
-                    x = np.arange(pos, pos+self.N)*2*np.pi/200000
+                    time.sleep(self.N/self.rate)
+                    t = np.arange(pos, pos+self.N)/self.rate
                     pos += self.N
-                    data = 10 * np.transpose([ np.sin(x), np.cos(x), -np.sin(x), -np.cos(x) ]) + np.random.normal(0, 0.1, size=(self.N, 4))
+                    data = 10 * np.transpose([ np.interp(t%10, [0,2,5,7], [-1,1,1,-1]),
+                                               np.interp(t%10, [0.39,2,5,6.61], [0.5,-0.5,-0.5,0.5]),
+                                               -np.sin(0.2*np.pi*t),
+                                               -np.cos(0.2*np.pi*t) ]) + np.random.normal(0, 0.1, size=(self.N, 4))
                 else:
                     data = ser.read(self.N*4*4)
                     data = np.frombuffer(data, dtype=np.int32).reshape(self.N, 4)*10/0x1ffff
