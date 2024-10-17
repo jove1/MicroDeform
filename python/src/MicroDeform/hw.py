@@ -110,7 +110,7 @@ class XY(Device):
     def stop(self, ax):
         self.cmd("{} STP", ax)
 
-    def move(sefl, ax, vel, dst): # relative
+    def move(self, ax, vel, dst): # relative
         self.cmd("{} VEL {}", ax, vel/1000)
         self.cmd("{} REL {}", ax, dst/1000)
 
