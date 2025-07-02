@@ -8,7 +8,7 @@ requires-python = ">=3.8"
 dependencies = [
     "numpy",
     "pyserial",
-    "PySide6",
+    "PySide6==6.7.2",
     "pyqtgraph"
 ]
 

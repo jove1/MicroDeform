@@ -112,7 +112,7 @@ class XY(Device):
 
     def move(self, ax, vel, dst): # relative
         self.cmd("{} VEL {}", ax, vel/1000)
-        self.cmd("{} REL {}", ax, dst/1000)
+        self.cmd("{} MVR {}", ax, dst/1000)
 
     def pos(self, cb):
         def f(s):
