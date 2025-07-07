@@ -491,7 +491,7 @@ class MicroDeform:
         load = self.calib_load * load
 
         if self.fh:
-            self.fh.write(np.transpose([pos,load]))
+            self.fh.write(np.column_stack([pos,load]))
 
         load_m, load_s = load.mean(), load.std()
         pos_m, pos_s = pos.mean(), pos.std()
