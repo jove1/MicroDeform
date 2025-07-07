@@ -76,8 +76,8 @@ class Window(QMainWindow):
             if key == Qt.Key_PageDown: self.md.ZMinus()
             if key == Qt.Key_PageUp:   self.md.ZPlus()
 
-            if key == Qt.Key_Home:     self.md.FZMinus()
-            if key == Qt.Key_End:      self.md.FZPlus()
+            if key == Qt.Key_End:      self.md.FZMinus()
+            if key == Qt.Key_Home:     self.md.FZPlus()
 
     def keyReleaseEvent(self, ev):
         if ev.isAutoRepeat():
